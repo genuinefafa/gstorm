@@ -52,14 +52,17 @@ class Gstorm {
      *
      * @param modelClass
      */
-    Gstorm stormify(Class modelClass) {
+    Gstorm stormify(Class modelClass, boolean createTable = true) {
         ClassMetaData classMetaData = new ClassMetaData(modelClass)
-        createTableFor(classMetaData)
+        if (createTable) {
+            createTableFor(classMetaData)
+        }
         new ModelClassEnhancer(classMetaData, sql).enhance()
         return this
     }
 
-    private def createTableFor(ClassMetaData metaData) {
+    protected def createTableFor(ClassMetaData metaData) {
+        // TODO: use IQueryBuilder and different implementations for each database
         sql.execute(new CreateTableQueryBuilder(metaData).build())
     }
 
